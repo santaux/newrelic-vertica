@@ -19,10 +19,7 @@ module NewRelic
             result = query_without_instrumentation(sql, options, &block)
           end
 
-          if NewRelic::Agent.tl_is_execution_traced?
-            NewRelic::Agent.instance.transaction_sampler.notice_sql(sql, nil, duration)
-            NewRelic::Agent.instance.stats_engine.get_stats_no_scope('ActiveRecord/all').trace_call(duration)
-          end
+          NewRelic::Agent.record_metric('Custom/Vertica/all', duration)
 
           return result
         end
